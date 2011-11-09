@@ -1,20 +1,34 @@
 package org.mule.module.saaj;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.Iterator;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.DetailEntry;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFault;
+import javax.xml.soap.SOAPHeaderElement;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.mule.api.MuleMessage;
 import org.mule.api.MuleRuntimeException;
 import org.mule.api.transformer.TransformerException;
 import org.mule.module.saaj.i18n.SaajMessages;
 import org.mule.transformer.AbstractMessageTransformer;
+import org.mule.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.soap.*;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Iterator;
 
 /**
  * <code>SOAPBodyToDocumentTransformer</code> Transform the payload of a <code>SOAPBody</code>,
@@ -74,7 +88,23 @@ public class SOAPMessageToDocumentTransformer extends AbstractMessageTransformer
         }
         result.appendChild(soapBody);
         populateHeaders(soapMessage, muleMessage);
+//        TransformerFactory transFactory = TransformerFactory.newInstance();
+//        Transformer transformer;
+//		try {
+//			transformer = transFactory.newTransformer();
+//			 StringWriter buffer = new StringWriter();
+//		        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+//		        transformer.transform(new DOMSource(result),
+//		              new StreamResult(buffer));
+//		        String str = buffer.toString();
+//		        logger.info(str);
+//		        return str;
+//		} catch (Exception e) {
+//            throw new MuleRuntimeException(SaajMessages.failedToCreateDocumentBuilder(), e);
+//
+//		}
         return result;
+       
     }
 
     private void populateHeaders(SOAPMessage soapMessage, MuleMessage muleMessage) {
@@ -85,9 +115,11 @@ public class SOAPMessageToDocumentTransformer extends AbstractMessageTransformer
                     SOAPHeaderElement header = (SOAPHeaderElement) elements.next();
                     String headerName = header.getLocalName();
                     String headerValue = header.getValue();
-                    logger.debug(String.format("Adding \"%s\" message property with value \"%s\" from the SOAP header",
-                            headerName, headerValue));
-                    muleMessage.setOutboundProperty(headerName, headerValue);
+                    if(StringUtils.isNotEmpty(headerName) && StringUtils.isNotEmpty(headerValue)){
+	                    logger.debug(String.format("Adding \"%s\" message property with value \"%s\" from the SOAP header",
+	                            headerName, headerValue));
+	                    muleMessage.setOutboundProperty(headerName, headerValue);
+                    }
                 }
             }
         } catch (SOAPException e) {

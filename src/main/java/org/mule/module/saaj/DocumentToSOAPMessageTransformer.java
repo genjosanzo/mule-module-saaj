@@ -1,12 +1,25 @@
 package org.mule.module.saaj;
 
+import java.io.ByteArrayOutputStream;
+import java.security.InvalidParameterException;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.Name;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPFactory;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPHeaderElement;
+import javax.xml.soap.SOAPMessage;
+
+import org.apache.tools.ant.filters.StringInputStream;
 import org.mule.api.MuleMessage;
 import org.mule.api.transformer.TransformerException;
 import org.mule.module.saaj.i18n.SaajMessages;
 import org.mule.transformer.AbstractMessageTransformer;
+import org.mule.transformer.types.DataTypeFactory;
 import org.w3c.dom.Document;
-
-import javax.xml.soap.*;
 
 /**
  * <code>DocumentToSOAPMessageTransformer</code> transforms a org.w3c.dom.Document to a SOAP message using
@@ -24,6 +37,13 @@ public class DocumentToSOAPMessageTransformer extends AbstractMessageTransformer
     public DocumentToSOAPMessageTransformer() throws Exception {
         soapFactory = SOAPFactory.newInstance();
         messageFactory = MessageFactory.newInstance();
+        registerSourceType(DataTypeFactory.STRING);
+        registerSourceType(DataTypeFactory.create(Document.class));
+        registerSourceType(DataTypeFactory.BYTE_ARRAY);
+        //Workaround for this issue https://issues.apache.org/jira/browse/XERCESJ-1234
+        System.setProperty("javax.xml.soap.SOAPFactory", "org.apache.axis.soap.SOAPFactoryImpl");
+        System.setProperty("javax.xml.soap.MessageFactory","org.apache.axis.soap.MessageFactoryImpl");
+        System.setProperty("javax.xml.soap.SOAPConnectionFactory","org.apache.axis.soap.SOAPConnectionFactoryImpl");
     }
 
     public void setPropagateHeaders(boolean propagateHeaders) {
@@ -40,8 +60,39 @@ public class DocumentToSOAPMessageTransformer extends AbstractMessageTransformer
 
     @Override
     public Object transformMessage(MuleMessage muleMessage, String s) throws TransformerException {
-
-        Document document = (Document) muleMessage.getPayload();
+    	Object src = muleMessage.getPayload();
+    	Document document;
+    	DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    	
+    	if (src instanceof String)
+         {
+    		try {
+    			
+				document = documentBuilderFactory.newDocumentBuilder().parse(new StringInputStream((String)src));
+				
+			} catch (Exception e) {
+				 throw new TransformerException(SaajMessages.failedToBuildSOAPMessage(),e);
+			} 
+         }
+    	else if (src instanceof ByteArrayOutputStream)
+        {
+    		ByteArrayOutputStream baos = (ByteArrayOutputStream)src;
+    		try {
+				document = DocumentBuilderFactory
+						.newInstance()
+						.newDocumentBuilder()
+						.parse(new StringInputStream(baos.toString()));
+			} catch (Exception e) {
+				throw new TransformerException(SaajMessages.failedToBuildSOAPMessage(),e);
+			} 
+			
+        }
+    	 else if (src instanceof Document)
+         {
+    		 document = (Document) src;
+         } else {
+        	 throw new TransformerException(SaajMessages.failedToBuildSOAPMessage(), new InvalidParameterException());
+         }
         SOAPMessage soapMessage;
 
         try {
