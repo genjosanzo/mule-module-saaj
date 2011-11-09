@@ -1,0 +1,2 @@
+The SAAJ module provides functionality for working directly with SOAP messages and their payloads.
+This allows you to send and receive SOAP messages over arbitrary transports, like JMS or HTTP, without having to employ a WSDL or generated stubs.

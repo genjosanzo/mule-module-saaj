@@ -8,11 +8,11 @@
 	<artifactId>mule-module-saaj</artifactId>
 	<packaging>jar</packaging>
 	<name>Mule Saaj Module</name>
-	<version>3.1.1.0</version>
+	<version>3.1.1.1-SNAPSHOT</version>
 	<description>Transform SOAP messages using SAAJ</description>
 
 	<properties>
-		<mule.version>3.1.1</mule.version>
+		<mule.version>3.1.2</mule.version>
 		<!-- Tools properties -->
 		<eclipsePluginVersion>2.5</eclipsePluginVersion>
 		<vmtype>org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType</vmtype>
@@ -246,13 +246,13 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://svn.muleforge.org/saaj/tags/mule-module-saaj-3.1.1.0</connection>
-		<developerConnection>scm:svn:https://svn.muleforge.org/saaj/tags/mule-module-saaj-3.1.1.0</developerConnection>
-		<url>http://svn.saaj.muleforge.org/tags/mule-module-saaj-3.1.1.0</url>
+		<connection>scm:git:git://github.com/genjosanzo/mule-module-saaj.git</connection>
+		<developerConnection>scm:git:git@github.com:genjosanzo/mule-module-saaj.git</developerConnection>
+		<url>https://github.com/genjosanzo/mule-module-saaj</url>
 	</scm>
 
 	<ciManagement>
-		<system>Bamboo</system>
+		<system>bamboo</system>
 		<url>http://bamboo.muleforge.org/browse/SAAJ-FORGE</url>
 		<notifiers />
 	</ciManagement>
@@ -301,4 +301,8 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<organization>
+		<name>MuleSoft, Inc</name>
+		<url>http://mulesoft.com</url>
+	</organization>
 </project>
