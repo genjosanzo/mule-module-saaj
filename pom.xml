@@ -78,6 +78,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.10</version>
 			</plugin>
 			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle-plugin</artifactId> 
 				<configuration> <configLocation> http://www.mulesource.org/docs/checkstyle.xml 
@@ -259,17 +260,16 @@
 
 	<distributionManagement>
 		<repository>
-			<id>muleforge.webdav.releases</id>
-			<url>dav:https://dav.muleforge.org/repository/saaj/</url>
+			<id>muleforge-releases</id>
+			<name>MuleForge Snapshot Repository</name>
+			<url>dav:https://repository.mulesoft.org/release/</url>
 		</repository>
 		<snapshotRepository>
-			<id>muleforge.webdav.snapshots</id>
-			<url>dav:https://dav.muleforge.org/snapshots.repository/saaj/</url>
+			<id>muleforge-snapshots</id>
+			<name>MuleForge Repository</name>
+			<url>dav:https://repository.mulesoft.org/snapshot/</url>
+			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
-		<site>
-			<id>muleforge.webdav.sites</id>
-			<url>dav:https://dav.muleforge.org/saaj/</url>
-		</site>
 	</distributionManagement>
 
 
@@ -278,7 +278,7 @@
 		<repository>
 			<id>muleforge-repo</id>
 			<name>MuleForge Repository</name>
-			<url>http://repository.muleforge.org</url>
+			<url>http://repository.mulesoft.org</url>
 			<layout>default</layout>
 		</repository>
 
