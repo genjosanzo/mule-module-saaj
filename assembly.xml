@@ -43,6 +43,7 @@ Assembly descriptor for the full distribution.
       <excludes>
         <exclude>org.mule:mule-core</exclude>
         <exclude>org.mule.modules:mule-module-spring-config</exclude>
+        <exclude>org.mule.modules:mule-module-xml</exclude>
         <exclude>commons-logging:commons-logging</exclude>
         <exclude>org.slf4j:*</exclude>
       </excludes>
